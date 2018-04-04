@@ -1,0 +1,2 @@
+# remote-controler
+# the xml file which is called dvcfragment is crash,I am solving it now,but it still not work,and I create a extra project for it,but it seems that I should delete the previous one so that I can push the new one,I think it is useless,so I push my project which is crash,and you may check it and give me some advices.Thanks! 
