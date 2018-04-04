@@ -1,142 +1,143 @@
 package mg.studio.controlerapp.remote_controler;
 
-import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+public class MainActivity extends FragmentActivity implements FragmentInfo.OnFragmentInteractionListener {
+    static final int NUM_ITEMS = 2;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    MyAdapter mAdapter;
 
-
-    private ViewPager vp;
-    //private ListFragment mFragmentList= new ListFragment();
-    private List<Fragment> mFragmentList = new ArrayList<Fragment>();
-    private FragmentAdapter mFragmAdapter;
-
-    private ControlFragment fragmentcontrol;
-    private ViewdvcFragment fragmentdvc;
-
-    private TextView title, connect, device;
-
-    String[] titles = new String[]{"Connection", "My device"};
+    ViewPager mPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //remove tools column
-        getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
 
-        initView();
+        mAdapter = new MyAdapter(getSupportFragmentManager());
 
-        mFragmAdapter = new FragmentAdapter(this.getSupportFragmentManager(), mFragmentList);
-        vp.setOffscreenPageLimit(2);//viewpager cache limit is 2
-        vp.setAdapter(mFragmAdapter);
-        vp.setCurrentItem(0);//init set viewPager choose the first one
-        connect.setTextColor(Color.parseColor("#000000"));
+        mPager = findViewById(R.id.pager);
+        mPager.setAdapter(mAdapter);
 
-        //ViewPager Listener
-        vp.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        // Watch for button clicks.
+        Button button = findViewById(R.id.goto_first);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+            public void onClick(View v) {
+                mPager.setCurrentItem(0);
             }
-
+        });
+        button = findViewById(R.id.goto_last);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPageSelected(int position) {
-                //calls when page is selected
-                title.setText(titles[position]);
-                //changeTextColor(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                //calls when state is changed,there are three state:0,1,2
-                /*
-                * arg0 == 1 means it is scrolling
-                * arg0 == 2 means it has scrolled
-                * arg0 == 0 means it does nothing*/
+            public void onClick(View v) {
+                mPager.setCurrentItem(NUM_ITEMS - 1);
             }
         });
     }
 
-    private void initView() {
-        title = (TextView) findViewById(R.id.title);
-        connect = (TextView) findViewById(R.id.connection);
-        device = (TextView) findViewById(R.id.mydevice);
 
-        connect.setOnClickListener(this);
-        device.setOnClickListener(this);
-
-        vp = (ViewPager) findViewById(R.id.viewpage1);
-        fragmentcontrol = new ControlFragment();
-        fragmentdvc = new ViewdvcFragment();
-        //add data to mFragmentList
-        mFragmentList.add(fragmentcontrol);
-        mFragmentList.add(fragmentdvc);
-    }
-    /*
-    private void initPosition() {
-        DisplayMetrics disp = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(disp);
-    }
-    */
-    //change viewpager when click textview
+    //For the FragmentInfo Java
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.connection:
-                vp.setCurrentItem(0, true);
-                break;
-            case R.id.mydevice:
-                vp.setCurrentItem(1, true);
-                break;
-        }
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
-    public class FragmentAdapter extends FragmentPagerAdapter {
-
-        List<Fragment> fragmentList = new ArrayList<Fragment>();
-
-        public FragmentAdapter(FragmentManager fm, List<Fragment> fragmentList) {
+    public static class MyAdapter extends FragmentPagerAdapter {
+        public MyAdapter(FragmentManager fm) {
             super(fm);
-            this.fragmentList = fragmentList;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return fragmentList.get(position);
         }
 
         @Override
         public int getCount() {
-            return fragmentList.size();
+            return NUM_ITEMS;
         }
 
-    }
-
-    /*
-     *change the bottom navigation' color through ViewPager' scrolling 由ViewPager的滑动修改底部导航Text的颜色
-     */
-    private void changeTextColor(int position) {
-        if (position == 0) {
-            connect.setTextColor(Color.parseColor("#66CDAA"));
-            device.setTextColor(Color.parseColor("#000000"));
-        } else if (position == 1) {
-            device.setTextColor(Color.parseColor("#66CDAA"));
-            connect.setTextColor(Color.parseColor("#000000"));
+        @Override
+        public Fragment getItem(int position) {
+            if (position == 1) return ArrayListFragment.newInstance(position);
+            return FragmentInfo.newInstance("Test", "Test2");
+            /*
+              v = inflater.inflate(R.layout.fragment_fragment_info, container, false);
+             View tv = v.findViewById(R.id.text);
+             ((TextView) tv).setText("Fragment #" + mNum);
+             */
         }
     }
 
+    public static class ArrayListFragment extends ListFragment {
+        int mNum;
+
+        /**
+         * Create a new instance of CountingFragment, providing "num"
+         * as an argument.
+         */
+        static ArrayListFragment newInstance(int num) {
+            ArrayListFragment f = new ArrayListFragment();
+
+            // Supply num input as an argument.
+            Bundle args = new Bundle();
+            args.putInt("num", num);
+            f.setArguments(args);
+
+            return f;
+        }
+
+        /**
+         * When creating, retrieve this instance's number from its arguments.
+         */
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            mNum = getArguments() != null ? getArguments().getInt("num") : 1;
+        }
+
+        /**
+         * The Fragment's UI is just a simple text view showing its
+         * instance number.
+         */
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View v;
+
+            v = inflater.inflate(R.layout.fragment_pager_list, container, false);
+            View tv = v.findViewById(R.id.text);
+            ((TextView) tv).setText("Fragment #" + mNum);
+
+            return v;
+        }
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            final String[] arrayDemo = {"20012001梁国辉Jack", "20012003吴尚泽Roland", "20012004程淼Elic", "20012005吴歌扬Remus", "20012006缪鹏飞mahon", "20012007刘峥Jerry", "20012009赵文杰Sam", "20012010桑明月bruce sand", "20012013秦帆Sail Chin", "20012014方岩simple", "20012016刘雨果Hugo", "20012017杨孝辉Paul", "20012018李宁Lee", "20012019杨译绗Yori", "20012020万芳维Arno", "20012021黄春霖Pinky", "20012022王丹zoy", "20012023王瀚哲orange", "20012025向微Jhon", "20012026邓炯尧dengjiongyao", "20012027裴凯强Joshua", "20012028刘毅frank", "20012029文愉舒Joshua", "20012030夏月Summon", "20012031WuTianyuRyan", "20012032薛景智Shawn", "20012033何宇River", "20012034彭小双Daniel", "20012035陶友玮Ronon", "20012038秦郡鸿Join", "20012039程金Alan", "20012041苏婷Rose", "20012042李昕Cyn", "20012043陈静Lottie", "20012044张健华Lancer", "20012046向鹏Alan", "20012047徐佩荃Jake", "20012048马浚豪Gattuso", "20012049周渝jerry", "20012050段张奇Monster", "20012052郭华钰Ben", "20012053邓慧迪Amber", "20012008John", "20012036ELI"};
+
+
+            setListAdapter(new ArrayAdapter<String>(getActivity(),
+                    R.layout.item_list, arrayDemo));
+        }
+
+        @Override
+        public void onListItemClick(ListView l, View v, int position, long id) {
+            Log.i("FragmentList", "Item clicked: " + id);
+        }
+    }
 
 
 }
