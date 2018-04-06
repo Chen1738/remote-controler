@@ -1,60 +1,47 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-xmlns:tools="http://schemas.android.com/tools"
-android:orientation="vertical">
-
-<RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    >
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="1">
+
+    </android.support.v4.view.ViewPager>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="connection"
-        android:textSize="20sp"
-        />
-</RelativeLayout>
+        android:gravity="center"
+        android:measureWithLargestChild="true"
+        android:orientation="horizontal">
 
-<android.support.v4.view.ViewPager
-    android:id="@+id/viewpage1"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"/>
+        <Button
+            android:id="@+id/goto_first"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:autoSizeTextType="uniform"
+            android:background="@color/colorPrimary"
+            android:text="Search"
+            android:textColor="@color/white" />
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="40dp"
-    android:layout_marginTop="1dp"
-    android:background="#1F9CEE"
-    android:baselineAligned="false"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingBottom="5dp"
-    android:paddingTop="5dp">
-    <TextView
-        android:id="@+id/connection"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:text="Connection"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/mydevice"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:text="Mydevice"
-        android:textSize="20sp" />
-
+        <Button
+            android:id="@+id/goto_last"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:autoSizeTextType="uniform"
+            android:background="@color/colorPrimary"
+            android:text="Devices"
+            android:textColor="@color/white" />
+    </LinearLayout>
 </LinearLayout>
 
-</LinearLayout>
