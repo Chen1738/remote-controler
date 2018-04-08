@@ -1,24 +1,108 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@drawable/background"
     tools:context=".FragmentInfo">
 
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/fragmenttext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:gravity="center"
-        android:text="Connection"
-        android:textColor="@color/white" />
+        android:textColor="@color/black" />
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_centerInParent="true"
-        android:elevation="26dp"
-        android:src="@drawable/fun" />
+        android:id="@+id/image"
+        android:layout_width="230dp"
+        android:layout_height="186dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="141dp"
+        android:elevation="26dp" />
+
+    <TextView
+        android:id="@+id/temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="66dp"
+        android:layout_marginStart="122dp"
+        android:text="25"
+        android:textSize="60dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="63dp"
+        android:layout_height="78dp"
+        android:layout_alignBottom="@+id/temperature"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="110dp"
+        android:text="℃"
+        android:textSize="60dp" />
+
+    <ImageView
+        android:id="@+id/speed"
+        android:layout_width="63dp"
+        android:layout_height="69dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="26dp"
+        android:layout_marginTop="153dp" />
+
+    <ImageView
+        android:id="@+id/direction"
+        android:layout_width="68dp"
+        android:layout_height="66dp"
+        android:layout_alignBottom="@+id/image"
+        android:layout_alignEnd="@+id/speed" />
+
+    <Button
+        android:id="@+id/on"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/button_circle"
+        android:text="On" />
+
+    <Button
+        android:id="@+id/off"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/on"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/button_circle"
+        android:text="Off" />
+
+    <Button
+        android:id="@+id/subtract"
+        android:layout_width="55dp"
+        android:layout_height="35dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="84dp"
+        android:layout_marginStart="44dp"
+        android:background="@drawable/button_circle"
+        android:text="-"
+        android:textSize="25dp" />
+
+    <Button
+        android:id="@+id/add"
+        android:background="@drawable/button_circle"
+        android:layout_width="55dp"
+        android:layout_height="35dp"
+        android:layout_alignEnd="@id/speed"
+        android:layout_alignTop="@+id/subtract"
+        android:layout_marginBottom="130dp"
+        android:text="+"
+        android:textSize="25dp" />
 
 </RelativeLayout>

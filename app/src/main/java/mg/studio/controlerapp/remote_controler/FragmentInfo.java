@@ -1,14 +1,26 @@
 package mg.studio.controlerapp.remote_controler;
 
 import android.content.Context;
+import android.hardware.ConsumerIrManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.plus.PlusOneButton;
+
+//there should add IR  code library
+
+
 
 /**
  * A fragment with a Google +1 button.
@@ -18,7 +30,9 @@ import com.google.android.gms.plus.PlusOneButton;
  * Use the {@link FragmentInfo#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentInfo extends Fragment {
+
+@RequiresApi(api = Build.VERSION_CODES.KITKAT)
+public class FragmentInfo extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -34,9 +48,32 @@ public class FragmentInfo extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    //ADD by author
+    String infoString= "Control";
+    final public String TITLE = "Control";
+    //get IRControle class
+    private ConsumerIrManager IR;
+    //adjust whether IR function
+    boolean IRBack;
+
+    private View view;
+    private ImageView modeimage,speedimage,directionimage;
+    //init air-conditioner data
+    //private AirData airdata = new AirData(0,25,0,0,0);
+
+    //init array,the elements are sources of images
+    private int modeimages[] = new int[]{R.drawable.heating,R.drawable.refrigeration,R.drawable.blowing,R.drawable.chushi};
+    private int speedimages[] = new int[]{R.drawable.high,R.drawable.mid,R.drawable.low};
+    private int directionimages[] = new int[]{R.drawable.hori,R.drawable.verti};
+    //deifne a number for cycle
+    private int count = 0;
+
+
     public FragmentInfo() {
         // Required empty public constructor
     }
+
+
 
     /**
      * Use this factory method to create a new instance of
@@ -67,9 +104,30 @@ public class FragmentInfo extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_fragment_info, container, false);
+
+        Button on = (Button) view.findViewById(R.id.on);
+        Button off = (Button) view.findViewById(R.id.off);
+
+        TextView textView =view.findViewById(R.id.fragmenttext);
+        textView.setText(infoString);
+
+        on.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onActivityCreated();
+            }
+        });
+
+        off.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                onResume();
+            }
+        });
+
 
         //Find the +1 button
 //        mPlusOneButton =  view.findViewById(R.id.plus_one_button);
@@ -77,9 +135,113 @@ public class FragmentInfo extends Fragment {
         return view;
     }
 
+
+    public void onActivityCreated() {//Bundle savedInstanceState
+
+        //super.onActivityCreated(savedInstanceState);
+
+
+        Button add = (Button) getActivity().findViewById(R.id.add);
+        Button subtract = (Button) getActivity().findViewById(R.id.subtract);
+
+        final ImageView imageView = getActivity().findViewById(R.id.image);
+        final ImageView imageView1 = getActivity().findViewById(R.id.speed);
+        final ImageView imageView2 = getActivity().findViewById(R.id.direction);
+
+        //add.setBackground(R.id.);
+        imageView.setImageResource(modeimages[0]);
+        imageView1.setImageResource(speedimages[0]);
+        imageView2.setImageResource(directionimages[0]);
+
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    imageView.setImageResource(modeimages[++count%modeimages.length]);
+                    //mode event
+                }
+            });
+
+            imageView1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    imageView1.setImageResource(speedimages[++count%speedimages.length]);
+                    //speed event
+                }
+            });
+
+            imageView2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    imageView2.setImageResource(directionimages[++count%directionimages.length]);
+                    //direction event
+                }
+            });
+
+            add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TextView temperature = getActivity().findViewById(R.id.temperature);
+                    int number = Integer.parseInt(temperature.getText().toString());
+
+                    if(number < 33){
+                        number+=1;
+                    }
+                    else {
+                        Toast.makeText(getActivity(), "temperature is too high!", Toast.LENGTH_SHORT).show();}
+                    temperature.setText(Integer.toString(number));
+                }
+            });
+
+            subtract.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TextView temperature = getActivity().findViewById(R.id.temperature);
+                    int number = Integer.parseInt(temperature.getText().toString());
+
+                    if(number > 15){
+                        number-=1;
+                    }
+                    else {
+                        Toast.makeText(getActivity(), "temperature is too low!", Toast.LENGTH_SHORT).show();}
+                    temperature.setText(Integer.toString(number));
+                }
+            });
+
+    }
+
+    private void InitEvent(){
+        //get ConsumerIrManager instance
+        IR = (ConsumerIrManager)getActivity().getSystemService(Context.CONSUMER_IR_SERVICE);
+
+        //perform check when sdk version>4.4
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            IRBack = IR.hasIrEmitter();
+            if(!IRBack) Toast.makeText(getActivity(), "sorry,there is not IR device", Toast.LENGTH_SHORT).show();
+            else Toast.makeText(getActivity(), "IR device is ready ", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /*send IR sign
+    * @param carrierFrenquency  the frequency of IR transmit
+     * @param pattern  the alternative time(/us) of on/off
+     * */
+    private void sendIrMsg(int carrierFrenquency,int[] pattern){
+        IR.transmit(carrierFrenquency,pattern);
+
+        Toast.makeText(getActivity(),"send successfully",Toast.LENGTH_SHORT).show();
+        String content = null;
+        for(int i = 0;i<pattern.length;i++){
+            content += String.valueOf(pattern[i])+",";
+        }
+        Log.e("remote messages",content);
+        Log.e("remote messages","the length is "+pattern.length);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
+        //onStop();
 
         // Refresh the state of the +1 button each time the activity receives focus.
 //        mPlusOneButton.initialize(PLUS_ONE_URL, PLUS_ONE_REQUEST_CODE);
