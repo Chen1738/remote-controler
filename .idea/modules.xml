@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/infrared-release/infrared-release.iml" filepath="$PROJECT_DIR$/infrared-release/infrared-release.iml" />
+      <module fileurl="file://$PROJECT_DIR$/infrared-release.aar/infrared-release.aar.iml" filepath="$PROJECT_DIR$/infrared-release.aar/infrared-release.aar.iml" />
       <module fileurl="file://$PROJECT_DIR$/remote-controler.iml" filepath="$PROJECT_DIR$/remote-controler.iml" />
     </modules>
   </component>

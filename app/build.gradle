@@ -20,6 +20,12 @@ android {
     }
 }
 
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -31,4 +37,5 @@ dependencies {
     implementation 'com.android.support:support-v4:27.1.0'
     implementation 'com.google.android.gms:play-services-plus:12.0.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation(name: 'infrared-release', ext: 'aar')
 }

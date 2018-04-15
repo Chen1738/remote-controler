@@ -12,9 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.plus.PlusOneButton;
 
@@ -52,12 +54,17 @@ public class FragmentInfo extends Fragment{
     String infoString= "Control";
     final public String TITLE = "Control";
     //get IRControle class
-    private ConsumerIrManager IR;
+    private ConsumerIrManager ir;
     //adjust whether IR function
-    boolean IRBack;
+    boolean irBack;
 
     private View view;
     private ImageView modeimage,speedimage,directionimage;
+    private ToggleButton toggleButton;
+    private ImageView imageView;
+    private ImageView imageView1;
+    private ImageView imageView2;
+    private Button add,subtract;
     //init air-conditioner data
     //private AirData airdata = new AirData(0,25,0,0,0);
 
@@ -72,8 +79,6 @@ public class FragmentInfo extends Fragment{
     public FragmentInfo() {
         // Required empty public constructor
     }
-
-
 
     /**
      * Use this factory method to create a new instance of
@@ -108,30 +113,37 @@ public class FragmentInfo extends Fragment{
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_fragment_info, container, false);
 
-        Button on = (Button) view.findViewById(R.id.on);
-        Button off = (Button) view.findViewById(R.id.off);
+        //Button on = (Button) view.findViewById(R.id.on);
+        //Button off = (Button) view.findViewById(R.id.off);
+        toggleButton=(ToggleButton) view.findViewById(R.id.toggleButton);
 
         TextView textView =view.findViewById(R.id.fragmenttext);
         textView.setText(infoString);
 
-        on.setOnClickListener(new View.OnClickListener() {
+        /*on.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onActivityCreated();
             }
-        });
+        });*/
 
-        off.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                onResume();
+
+        toggleButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // 当按钮第一次被点击时候响应的事件
+                if (toggleButton.isChecked()) {
+                    onActivityCreated();
+                }
+                // 当按钮再次被点击时候响应的事件
+                else {
+                    updateInfo();
+                }
             }
         });
 
-
         //Find the +1 button
 //        mPlusOneButton =  view.findViewById(R.id.plus_one_button);
-
+        initEvent();
         return view;
     }
 
@@ -141,12 +153,12 @@ public class FragmentInfo extends Fragment{
         //super.onActivityCreated(savedInstanceState);
 
 
-        Button add = (Button) getActivity().findViewById(R.id.add);
-        Button subtract = (Button) getActivity().findViewById(R.id.subtract);
+        add = (Button) getActivity().findViewById(R.id.add);
+        subtract = (Button) getActivity().findViewById(R.id.subtract);
 
-        final ImageView imageView = getActivity().findViewById(R.id.image);
-        final ImageView imageView1 = getActivity().findViewById(R.id.speed);
-        final ImageView imageView2 = getActivity().findViewById(R.id.direction);
+        imageView = getActivity().findViewById(R.id.image);
+        imageView1 = getActivity().findViewById(R.id.speed);
+        imageView2 = getActivity().findViewById(R.id.direction);
 
         //add.setBackground(R.id.);
         imageView.setImageResource(modeimages[0]);
@@ -210,24 +222,34 @@ public class FragmentInfo extends Fragment{
 
     }
 
-    private void InitEvent(){
+    private void initEvent(){
         //get ConsumerIrManager instance
-        IR = (ConsumerIrManager)getActivity().getSystemService(Context.CONSUMER_IR_SERVICE);
+        ir = (ConsumerIrManager)getActivity().getSystemService(Context.CONSUMER_IR_SERVICE);
 
         //perform check when sdk version>4.4
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            IRBack = IR.hasIrEmitter();
-            if(!IRBack) Toast.makeText(getActivity(), "sorry,there is not IR device", Toast.LENGTH_SHORT).show();
+            irBack = ir.hasIrEmitter();
+            if(!irBack) Toast.makeText(getActivity(), "sorry,there is not IR device", Toast.LENGTH_SHORT).show();
             else Toast.makeText(getActivity(), "IR device is ready ", Toast.LENGTH_SHORT).show();
         }
     }
 
+    public void updateInfo(){
+        /*imageView = getActivity().findViewById(R.id.image);
+        imageView1 = getActivity().findViewById(R.id.speed);
+        imageView2 = getActivity().findViewById(R.id.direction);*/
+        imageView.setVisibility(View.INVISIBLE);
+        imageView1.setVisibility(View.INVISIBLE);
+        imageView2.setVisibility(View.INVISIBLE);
+        add.setEnabled(false);
+        subtract.setEnabled(false);
+    }
     /*send IR sign
     * @param carrierFrenquency  the frequency of IR transmit
      * @param pattern  the alternative time(/us) of on/off
      * */
     private void sendIrMsg(int carrierFrenquency,int[] pattern){
-        IR.transmit(carrierFrenquency,pattern);
+        ir.transmit(carrierFrenquency,pattern);
 
         Toast.makeText(getActivity(),"send successfully",Toast.LENGTH_SHORT).show();
         String content = null;
